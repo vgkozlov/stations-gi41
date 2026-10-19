@@ -15,5 +15,13 @@ public final class StationRegistry {
         return stations;
     }
 
+public List<Station> findByType(StationType type) {
+    if (type == null) {
+        throw new IllegalArgumentException("StationType must not be null");
+    }
+    return stations.stream()
+            .filter(station -> station.type() == type)
+            .toList();
+}
     // новые методы добавляются в конец класса
 }
