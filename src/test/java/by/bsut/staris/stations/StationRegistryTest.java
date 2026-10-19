@@ -38,5 +38,14 @@ class StationRegistryTest {
         assertTrue(registry.all().stream().allMatch(station -> station.distanceFromGomelKm() >= 0));
     }
 
+    @Test
+    void testGomelSortirovochnyExists() {
+        var station = new Station("Гомель-Сортировочный", Line.GOMEL_ZHLOBIN, StationType.MARSHALLING, 5);
+        org.junit.jupiter.api.Assertions.assertTrue(
+            new StationRegistry().all().contains(station),
+            "Станция Гомель-Сортировочный должна присутствовать в справочнике"
+    );
+}
+
     // тесты новых станций и методов добавляются в конец класса
 }
