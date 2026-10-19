@@ -5,4 +5,5 @@
 
 | Станция | Направление | Тип | Расстояние от Гомеля, км |
 | --- | --- | --- | --- |
-| Гомель-Пассажирский | GOMEL_ZHLOBIN | PASSENGER | 0 |
+| Гомель-Пассажирский |  GOMEL_ZHLOBIN  |  PASSENGER | 0 |
+|       Носовичи      |  GOMEL_BRYANSK  |INTERMEDIATE|35 |

@@ -37,6 +37,13 @@ class StationRegistryTest {
     void distancesAreNotNegative() {
         assertTrue(registry.all().stream().allMatch(station -> station.distanceFromGomelKm() >= 0));
     }
-
+@Test
+@DisplayName("Справочник содержит станцию Носовичи с корректными атрибутами")
+void containsNosovichi() {
+    Station nosovichi = station("Носовичи");
+    assertEquals(Line.GOMEL_BRYANSK, nosovichi.line());
+    assertEquals(StationType.INTERMEDIATE, nosovichi.type());
+    assertEquals(35, nosovichi.distanceFromGomelKm());
+}
     // тесты новых станций и методов добавляются в конец класса
 }
