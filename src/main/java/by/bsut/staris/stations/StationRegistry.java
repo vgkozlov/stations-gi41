@@ -15,5 +15,20 @@ public final class StationRegistry {
     public List<Station> all() {
         return stations;
     }
+
+   
+    public String toMarkdownTable() {
+        StringBuilder table = new StringBuilder();
+        table.append("| Станция | Направление | Тип | Расстояние от Гомеля, км |\n");
+        table.append("| --- | --- | --- | --- |\n");
+        for (Station station : stations) {
+            table.append("| ").append(station.name())
+                    .append(" | ").append(station.line().name())
+                    .append(" | ").append(station.type().name())
+                    .append(" | ").append(station.distanceFromGomelKm())
+                    .append(" |\n");
+        }
+        return table.toString();
+    }
     // новые методы добавляются в конец класса
 }
