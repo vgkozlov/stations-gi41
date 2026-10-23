@@ -70,6 +70,15 @@ class StationRegistryTest {
     }
 
     @Test
+    @DisplayName("Справочник содержит станцию Костюковка с корректными атрибутами")
+    void containsKostyukovka() {
+        Station kostyukovka = station("Костюковка");
+        assertEquals(Line.GOMEL_ZHLOBIN, kostyukovka.line());
+        assertEquals(StationType.INTERMEDIATE, kostyukovka.type());
+        assertEquals(12, kostyukovka.distanceFromGomelKm());
+    }
+
+    @Test
     @DisplayName("Поиск по точному имени возвращает каждую станцию справочника")
     void findByNameReturnsEachStation() {
         for (Station expected : registry.all()) {
