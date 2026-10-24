@@ -15,7 +15,8 @@ public final class StationRegistry {
                 new Station("Демехи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 57),
                 new Station("Житковичи", Line.GOMEL_LUNINETS, StationType.INTERMEDIATE, 238),
                 new Station("Калинковичи", Line.GOMEL_KALINKOVICHI, StationType.DIVISIONAL, 125),
-                new Station("Василевичи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 86)
+                new Station("Василевичи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 86),
+                new Station("Тереховка", Line.GOMEL_BAKHMACH, StationType.INTERMEDIATE, 43)
                 // новые станции добавляются в конец списка
         );
     }
