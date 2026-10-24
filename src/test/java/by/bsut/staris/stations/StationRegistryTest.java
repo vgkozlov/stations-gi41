@@ -188,5 +188,35 @@ class StationRegistryTest {
                 () -> new StationRegistry().namesStartingWith(null));
     }
 
+    @Test
+    @DisplayName("distanceBetween возвращает модуль разности расстояний для станций одного направления")
+    void distanceBetweenReturnsDistanceForSameLine() {
+        assertEquals(68, registry.distanceBetween("Демехи", "Калинковичи"));
+        assertEquals(68, registry.distanceBetween("Калинковичи", "Демехи"));
+    }
+
+    @Test
+    @DisplayName("distanceBetween выбрасывает исключение для неизвестной станции")
+    void distanceBetweenThrowsForUnknownStation() {
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.distanceBetween("Несуществующая станция", "Демехи"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.distanceBetween("Демехи", "Несуществующая станция"));
+    }
+
+    @Test
+    @DisplayName("distanceBetween выбрасывает исключение для станций разных направлений")
+    void distanceBetweenThrowsForDifferentLines() {
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.distanceBetween("Гомель-Пассажирский", "Демехи"));
+    }
+
+    @Test
+    @DisplayName("distanceBetween возвращает 0 для одной и той же станции и не зависит от регистра")
+    void distanceBetweenReturnsZeroForSameStation() {
+        assertEquals(0, registry.distanceBetween("Демехи", "Демехи"));
+        assertEquals(0, registry.distanceBetween("демехи", "ДЕМЕХИ"));
+    }
+
     // тесты новых станций и методов добавляются в конец класса
 }

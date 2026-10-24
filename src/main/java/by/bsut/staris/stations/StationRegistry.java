@@ -68,6 +68,23 @@ public List<String> namesStartingWith(String prefix) {
             .toList();
 }
 
-    
+    /**
+     * Возвращает модуль разности расстояний для станций одного направления.
+     *
+     * @throws IllegalArgumentException если станция неизвестна или направления станций различаются
+     */
+    public int distanceBetween(String a, String b) {
+        Station stationA = findByName(a)
+                .orElseThrow(() -> new IllegalArgumentException("Станция не найдена: " + a));
+        Station stationB = findByName(b)
+                .orElseThrow(() -> new IllegalArgumentException("Станция не найдена: " + b));
+
+        if (stationA.line() != stationB.line()) {
+            throw new IllegalArgumentException("Станции относятся к разным направлениям");
+        }
+
+        return Math.abs(stationA.distanceFromGomelKm() - stationB.distanceFromGomelKm());
+    }
+
     // новые методы добавляются в конец класса
 }
