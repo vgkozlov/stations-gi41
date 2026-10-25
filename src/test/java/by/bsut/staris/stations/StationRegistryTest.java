@@ -290,6 +290,36 @@ class StationRegistryTest {
         assertEquals(0, registry.distanceBetween("Демехи", "Демехи"));
         assertEquals(0, registry.distanceBetween("демехи", "ДЕМЕХИ"));
     }
+    @Test
+    @DisplayName("withinRadius возвращает станции в пределах заданного радиуса")
+    void testWithinRadiusNormal() {
+        StationRegistry registry = new StationRegistry();
+        // В радиусе 60 км должны быть станции с расстоянием <= 60
+        List<Station> stations = registry.withinRadius(60);
+        assertTrue(!stations.isEmpty());
+        assertTrue(stations.stream().allMatch(s -> s.distanceFromGomelKm() <= 60));
+    }
 
+    @Test
+    @DisplayName("withinRadius возвращает пустой список, если в радиусе нет станций")
+    void testWithinRadiusEmpty() {
+        // Создаем реестр, где ближайшая станция на расстоянии 100 км
+        StationRegistry emptyRegistry = new StationRegistry(List.of(
+                new Station("Далекая", Line.GOMEL_ZHLOBIN, StationType.INTERMEDIATE, 100)
+        ));
+        // Ищем в радиусе 10 км — список должен быть пустым
+        List<Station> stations = emptyRegistry.withinRadius(10);
+        assertTrue(stations.isEmpty());
+    }
+
+    @Test
+    @DisplayName("withinRadius выбрасывает IllegalArgumentException при отрицательном радиусе")
+    void testWithinRadiusNegative() {
+        StationRegistry registry = new StationRegistry();
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> registry.withinRadius(-5)
+        );
+    }
     // тесты новых станций и методов добавляются в конец класса
 }

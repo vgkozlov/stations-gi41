@@ -107,7 +107,14 @@ public List<String> namesStartingWith(String prefix) {
 
         return Math.abs(stationA.distanceFromGomelKm() - stationB.distanceFromGomelKm());
     }
-
+    public List<Station> withinRadius(int maxKm) {
+        if (maxKm < 0) {
+            throw new IllegalArgumentException("Радиус не может быть отрицательным");
+        }
+        return stations.stream()
+                .filter(s -> s.distanceFromGomelKm() <= maxKm)
+                .toList();
+    }
     // новые методы добавляются в конец класса
 }
 
