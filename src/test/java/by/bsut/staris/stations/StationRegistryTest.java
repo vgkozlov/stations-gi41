@@ -261,6 +261,13 @@ class StationRegistryTest {
         assertEquals(StationType.INTERMEDIATE, terekhovka.type());
         assertEquals(43, terekhovka.distanceFromGomelKm());
     }
-
+    @Test
+    @DisplayName("Справочник содержит станцию Петриков с корректными атрибутами")
+    void containsPetrikov() {
+        Station petrikov = station("Петриков");
+        assertEquals(Line.GOMEL_KALINKOVICHI, petrikov.line());
+        assertEquals(StationType.INTERMEDIATE, petrikov.type());
+        assertEquals(189, petrikov.distanceFromGomelKm());
+    }
     // тесты новых станций и методов добавляются в конец класса
 }
