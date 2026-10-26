@@ -5,5 +5,15 @@
 
 | Станция | Направление | Тип | Расстояние от Гомеля, км |
 | --- | --- | --- | --- |
+
 | Гомель-Пассажирский |  GOMEL_ZHLOBIN  |  PASSENGER | 0 |
 |       Носовичи      |  GOMEL_BRYANSK  |INTERMEDIATE|35 |
+
+| Гомель-Пассажирский | GOMEL_ZHLOBIN | PASSENGER | 0 |
+| Демехи | GOMEL_KALINKOVICHI | INTERMEDIATE | 57 |
+| Житковичи | GOMEL_LUNINETS | INTERMEDIATE | 238 |
+| Калинковичи | GOMEL_KALINKOVICHI | DIVISIONAL | 125 |
+| Василевичи | GOMEL_KALINKOVICHI | INTERMEDIATE | 86 |
+| Тереховка | GOMEL_BAKHMACH | INTERMEDIATE | 43 |
+| Уза | GOMEL_ZHLOBIN | INTERMEDIATE | 23 |
+
