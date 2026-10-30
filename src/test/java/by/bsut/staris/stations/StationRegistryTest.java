@@ -458,5 +458,14 @@ class StationRegistryTest {
         assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
 
+    @Test
+    @DisplayName("Справочник содержит станцию Рогачёв с корректными атрибутами")
+    void containsRogachev() {
+        Station rogachev = station("Рогачёв");
+        assertEquals(Line.MOGILEV_ZHLOBIN, rogachev.line());
+        assertEquals(StationType.INTERMEDIATE, rogachev.type());
+        assertEquals(112, rogachev.distanceFromGomelKm());
+    }
+
     // тесты новых станций и методов добавляются в конец класса
 }
