@@ -458,5 +458,45 @@ class StationRegistryTest {
         assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
 
+    // ==================== Дополнительные тесты для метода farthest (Issue #29) ====================
+
+    @Test
+    @DisplayName("farthest: выбирает станцию с максимальным расстоянием среди разных направлений")
+    void farthestChoosesMaximumDistanceAcrossLines() {
+        StationRegistry sample = new StationRegistry(List.of(
+                new Station("Ближняя", Line.GOMEL_ZHLOBIN, StationType.INTERMEDIATE, 10),
+                new Station("Дальняя", Line.GOMEL_KALINKOVICHI, StationType.DIVISIONAL, 250),
+                new Station("Средняя", Line.GOMEL_LUNINETS, StationType.PASSENGER, 120)
+        ));
+
+        assertEquals("Дальняя", sample.farthest().orElseThrow().name());
+    }
+
+    @Test
+    @DisplayName("farthest: результат не зависит от порядка станций в справочнике")
+    void farthestDoesNotDependOnRegistryOrder() {
+        Station first = new Station("Первая", Line.GOMEL_ZHLOBIN, StationType.INTERMEDIATE, 15);
+        Station second = new Station("Вторая", Line.GOMEL_BRYANSK, StationType.FREIGHT, 40);
+        Station third = new Station("Третья", Line.GOMEL_LUNINETS, StationType.PASSENGER, 210);
+
+        StationRegistry forward = new StationRegistry(List.of(first, second, third));
+        StationRegistry reverse = new StationRegistry(List.of(third, second, first));
+
+        assertEquals(Optional.of(third), forward.farthest());
+        assertEquals(Optional.of(third), reverse.farthest());
+    }
+
+    @Test
+    @DisplayName("farthest: выбор определяется только расстоянием, а не типом станции")
+    void farthestSelectsByDistanceRegardlessOfStationType() {
+        StationRegistry sample = new StationRegistry(List.of(
+                new Station("Сортировочная", Line.GOMEL_ZHLOBIN, StationType.MARSHALLING, 30),
+                new Station("Промежуточная", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 90),
+                new Station("Пассажирская", Line.GOMEL_BAKHMACH, StationType.PASSENGER, 50)
+        ));
+
+        assertEquals(90, sample.farthest().orElseThrow().distanceFromGomelKm());
+    }
+
     // тесты новых станций и методов добавляются в конец класса
 }
