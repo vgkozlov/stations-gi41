@@ -2,33 +2,24 @@ package by.bsut.staris.stations;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StationRegistryTest {
 
@@ -229,7 +220,7 @@ class StationRegistryTest {
     void findByNameDoesNotMatchPartialOrAlteredName(String name) {
         assertEquals(Optional.empty(), registry.findByName(name));
     }
-    
+
     @Test
     @DisplayName("Справочник содержит станцию Василевичи с корректными атрибутами")
     void containsVasilevichi() {
@@ -458,5 +449,41 @@ class StationRegistryTest {
         assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
 
+    @Test
+    @DisplayName("Поиск по типу INTERMEDIATE возвращает все промежуточные станции в порядке справочника")
+    void findByTypeReturnsIntermediateStations() {
+        assertEquals(
+                List.of(
+                        station("Демехи"),
+                        station("Житковичи"),
+                        station("Василевичи"),
+                        station("Тереховка"),
+                        station("Уза"),
+                        station("Словечно"),
+                        station("Светлогорск-на-Березине")),
+                registry.findByType(StationType.INTERMEDIATE));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу PASSENGER возвращает единственную пассажирскую станцию")
+    void findByTypeReturnsPassengerStation() {
+        assertEquals(List.of(station("Гомель-Пассажирский")), registry.findByType(StationType.PASSENGER));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу, которого нет в справочнике, возвращает пустой список")
+    void findByTypeReturnsEmptyWhenNoStationsMatch() {
+        StationType missing = Arrays.stream(StationType.values())
+                .filter(type -> registry.all().stream().noneMatch(station -> station.type() == type))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("В справочнике есть станции всех типов"));
+        assertEquals(List.of(), registry.findByType(missing));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу null выбрасывает IllegalArgumentException")
+    void findByTypeRejectsNull() {
+        assertThrows(IllegalArgumentException.class, () -> registry.findByType(null));
+    }
     // тесты новых станций и методов добавляются в конец класса
 }
