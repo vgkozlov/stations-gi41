@@ -7,6 +7,7 @@ public enum Line {
     GOMEL_BAKHMACH,
     GOMEL_BRYANSK,
     GOMEL_LUNINETS,
-    ZHLOBIN_KALINKOVICHI
+    ZHLOBIN_KALINKOVICHI,
+    MOGILEV_ZHLOBIN
     // новые направления добавляются в конец списка
 }

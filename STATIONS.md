@@ -15,3 +15,4 @@
 | Словечно | GOMEL_KALINKOVICHI | INTERMEDIATE | 194 |
 | Гомель-Сортировочный | GOMEL_ZHLOBIN | MARSHALLING | 6 |
 | Светлогорск-на-Березине | ZHLOBIN_KALINKOVICHI | INTERMEDIATE | 124 |
+| Рогачёв | MOGILEV_ZHLOBIN | INTERMEDIATE | 112 |
