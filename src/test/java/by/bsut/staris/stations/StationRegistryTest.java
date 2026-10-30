@@ -413,5 +413,14 @@ class StationRegistryTest {
         assertEquals(124, station.distanceFromGomelKm());
     }
 
+    @Test
+    @DisplayName("Справочник содержит станцию Буда-Кошелёвская с корректными атрибутами")
+    void containsBudaKoshelevo() {
+    	Station station = station("Буда-Кошелёвская");
+  	assertEquals(Line.GOMEL_ZHLOBIN, station.line());
+    	assertEquals(StationType.INTERMEDIATE, station.type());
+    	assertEquals(45, station.distanceFromGomelKm());
+    }
+
     // тесты новых станций и методов добавляются в конец класса
 }
