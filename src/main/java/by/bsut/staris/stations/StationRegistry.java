@@ -34,5 +34,21 @@ public final class StationRegistry {
                 .filter(station -> station.name().equalsIgnoreCase(normalizedName))
                 .findFirst();
     }
+
+    /**
+     * Возвращает станции заданного типа в порядке справочника.
+     *
+     * @param type тип станции
+     * @return станции этого типа; пустой список, если таких станций нет
+     * @throws IllegalArgumentException если {@code type} равен {@code null}
+     */
+    public List<Station> findByType(StationType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Тип станции не задан");
+        }
+        return stations.stream()
+                .filter(station -> station.type() == type)
+                .toList();
+    }
     // новые методы добавляются в конец класса
 }

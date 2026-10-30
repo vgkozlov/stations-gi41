@@ -6,9 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StationRegistryTest {
@@ -119,6 +121,33 @@ class StationRegistryTest {
     @DisplayName("Поиск требует полного имени и сохраняет внутренние пробелы")
     void findByNameDoesNotMatchPartialOrAlteredName(String name) {
         assertEquals(Optional.empty(), registry.findByName(name));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу INTERMEDIATE возвращает все промежуточные станции в порядке справочника")
+    void findByTypeReturnsIntermediateStations() {
+        assertEquals(
+                List.of(station("Демехи"), station("Житковичи"), station("Костюковка")),
+                registry.findByType(StationType.INTERMEDIATE));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу PASSENGER возвращает единственную пассажирскую станцию")
+    void findByTypeReturnsPassengerStation() {
+        assertEquals(List.of(station("Гомель-Пассажирский")), registry.findByType(StationType.PASSENGER));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу без станций возвращает пустой список")
+    void findByTypeReturnsEmptyWhenNoStationsMatch() {
+        assertEquals(List.of(), registry.findByType(StationType.FREIGHT));
+        assertEquals(List.of(), registry.findByType(StationType.MARSHALLING));
+    }
+
+    @Test
+    @DisplayName("Поиск по типу null выбрасывает IllegalArgumentException")
+    void findByTypeRejectsNull() {
+        assertThrows(IllegalArgumentException.class, () -> registry.findByType(null));
     }
     // тесты новых станций и методов добавляются в конец класса
 }
