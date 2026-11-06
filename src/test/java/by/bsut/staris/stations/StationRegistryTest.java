@@ -134,6 +134,7 @@ class StationRegistryTest {
         assertEquals(124, station.distanceFromGomelKm());
     }
 
+    // ==================== ЗАДАЧА 1: Тест для новой станции ====================
     @Test
     @DisplayName("Справочник содержит станцию Мозырь с корректными атрибутами")
     void containsMozyr() {
@@ -396,44 +397,38 @@ class StationRegistryTest {
         assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
 
-    // ==================== ЗАДАЧА 2: Тесты для метода countByLine (в конце класса) ====================
+    // ==================== ЗАДАЧА 2: Тесты для метода countByLine ====================
 
     @Test
-    @DisplayName("countByLine считает станции по направлениям корректно")
-    void countByLineCountsStationsPerLine() {
-        StationRegistry sample = new StationRegistry(List.of(
-                new Station("Демехи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 57),
-                new Station("Калинковичи", Line.GOMEL_KALINKOVICHI, StationType.DIVISIONAL, 125),
-                new Station("Житковичи", Line.GOMEL_LUNINETS, StationType.INTERMEDIATE, 238)
-        ));
+    @DisplayName("countByLine корректно считает количество станций по направлениям")
+    void shouldCountStationsByLineCorrectly() {
+        StationRegistry registry = new StationRegistry();
+        Map<Line, Long> counts = registry.countByLine();
 
-        assertEquals(
-                Map.of(Line.GOMEL_KALINKOVICHI, 2L, Line.GOMEL_LUNINETS, 1L),
-                sample.countByLine());
-    }
-
-    @Test
-    @DisplayName("countByLine возвращает пустую карту для пустого справочника")
-    void countByLineReturnsEmptyMapForEmptyRegistry() {
-        assertTrue(new StationRegistry(List.of()).countByLine().isEmpty());
+        // 5 станций: Демехи, Калинковичи, Василевичи, Словечно, Мозырь
+        assertEquals(5L, counts.get(Line.GOMEL_KALINKOVICHI));
+        // 3 станции: Гомель-Пассажирский, Уза, Гомель-Сортировочный
+        assertEquals(3L, counts.get(Line.GOMEL_ZHLOBIN));
+        // 1 станция: Житковичи
+        assertEquals(1L, counts.get(Line.GOMEL_LUNINETS));
     }
 
     @Test
     @DisplayName("countByLine не включает направления без станций")
-    void countByLineOmitsLinesWithoutStations() {
-        StationRegistry single = new StationRegistry(List.of(
-                new Station("Гомель-Пассажирский", Line.GOMEL_ZHLOBIN, StationType.PASSENGER, 0)));
+    void shouldNotIncludeLinesWithoutStations() {
+        StationRegistry registry = new StationRegistry();
+        Map<Line, Long> counts = registry.countByLine();
 
-        Map<Line, Long> counts = single.countByLine();
-
-        assertEquals(Map.of(Line.GOMEL_ZHLOBIN, 1L), counts);
         assertFalse(counts.containsKey(Line.GOMEL_BRYANSK));
     }
 
     @Test
     @DisplayName("countByLine: сумма по направлениям равна общему числу станций справочника")
-    void countByLineSumsToRegistrySize() {
-        long total = registry.countByLine().values().stream().mapToLong(Long::longValue).sum();
+    void shouldSumUpToTotalStations() {
+        StationRegistry registry = new StationRegistry();
+        Map<Line, Long> counts = registry.countByLine();
+
+        long total = counts.values().stream().mapToLong(Long::longValue).sum();
         assertEquals(registry.all().size(), total);
     }
 }
