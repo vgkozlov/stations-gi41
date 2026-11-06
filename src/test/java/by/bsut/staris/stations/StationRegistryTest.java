@@ -2,26 +2,9 @@ package by.bsut.staris.stations;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class StationRegistryTest {
 
@@ -63,19 +53,249 @@ class StationRegistryTest {
     }
 
     @Test
+    @DisplayName("Справочник содержит станцию Гомель-Сортировочный")
     void testGomelSortirovochnyExists() {
         var station = new Station("Гомель-Сортировочный", Line.GOMEL_ZHLOBIN, StationType.MARSHALLING, 6);
-        org.junit.jupiter.api.Assertions.assertTrue(
+        assertTrue(
             new StationRegistry().all().contains(station),
             "Станция Гомель-Сортировочный должна присутствовать в справочнике"
-    );
-}
+        );
+    }
+
+    @Test
     @DisplayName("Справочник содержит станцию Демехи с корректными атрибутами")
     void containsDemekhi() {
         Station demekhi = station("Демехи");
         assertEquals(Line.GOMEL_KALINKOVICHI, demekhi.line());
         assertEquals(StationType.INTERMEDIATE, demekhi.type());
         assertEquals(57, demekhi.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Житковичи с корректными атрибутами")
+    void containsZhitkovichi() {
+        Station zhitkovichi = station("Житковичи");
+        assertEquals(Line.GOMEL_LUNINETS, zhitkovichi.line());
+        assertEquals(StationType.INTERMEDIATE, zhitkovichi.type());
+        assertEquals(238, zhitkovichi.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Калинковичи с корректными атрибутами")
+    void containsKalinkovichi() {
+        Station kalinkovichi = station("Калинковичи");
+        assertEquals(Line.GOMEL_KALINKOVICHI, kalinkovichi.line());
+        assertEquals(StationType.DIVISIONAL, kalinkovichi.type());
+        assertEquals(125, kalinkovichi.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Василевичи с корректными атрибутами")
+    void containsVasilevichi() {
+        Station vasilevichi = station("Василевичи");
+        assertEquals(Line.GOMEL_KALINKOVICHI, vasilevichi.line());
+        assertEquals(StationType.INTERMEDIATE, vasilevichi.type());
+        assertEquals(86, vasilevichi.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Тереховка с корректными атрибутами")
+    void containsTerekhovka() {
+        Station terekhovka = station("Тереховка");
+        assertEquals(Line.GOMEL_BAKHMACH, terekhovka.line());
+        assertEquals(StationType.INTERMEDIATE, terekhovka.type());
+        assertEquals(43, terekhovka.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Уза с корректными атрибутами")
+    void containsUza() {
+        Station uza = station("Уза");
+        assertEquals(Line.GOMEL_ZHLOBIN, uza.line());
+        assertEquals(StationType.INTERMEDIATE, uza.type());
+        assertEquals(23, uza.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Словечно с корректными атрибутами")
+    void containsSlovechno() {
+        Station slovechno = station("Словечно");
+        assertEquals(Line.GOMEL_KALINKOVICHI, slovechno.line());
+        assertEquals(StationType.INTERMEDIATE, slovechno.type()); 
+        assertEquals(194, slovechno.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Светлогорск-на-Березине с корректными атрибутами")
+    void containsSvetlogorskNaBerezine() {
+        Station station = station("Светлогорск-на-Березине");
+        assertEquals(Line.ZHLOBIN_KALINKOVICHI, station.line());
+        assertEquals(StationType.INTERMEDIATE, station.type());
+        assertEquals(124, station.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Справочник содержит станцию Мозырь с корректными атрибутами")
+    void containsMozyr() {
+        Station mozyr = station("Мозырь");
+        assertEquals(Line.GOMEL_KALINKOVICHI, mozyr.line());
+        assertEquals(StationType.DIVISIONAL, mozyr.type());
+        assertEquals(133, mozyr.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Поиск по точному имени возвращает каждую станцию справочника")
+    void findByNameReturnsEachStation() {
+        for (Station expected : registry.all()) {
+            assertEquals(Optional.of(expected), registry.findByName(expected.name()));
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"гомель-пассажирский", "ГОМЕЛЬ-ПАССАЖИРСКИЙ", "ГоМеЛь-ПаСсАжИрСкИй"})
+    @DisplayName("Поиск по имени не учитывает регистр кириллицы")
+    void findByNameIgnoresCase(String name) {
+        assertEquals(Optional.of(station("Гомель-Пассажирский")), registry.findByName(name));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"  Гомель-Пассажирский  ", "\tгомель-пассажирский\n", "\u2003ГОМЕЛЬ-ПАССАЖИРСКИЙ\u2003"})
+    @DisplayName("Поиск по имени удаляет пробелы по краям, в том числе вместе с изменением регистра")
+    void findByNameStripsSurroundingWhitespace(String name) {
+        assertEquals(Optional.of(station("Гомель-Пассажирский")), registry.findByName(name));
+    }
+
+    @Test
+    @DisplayName("Поиск неизвестного имени возвращает пустой Optional")
+    void findByNameReturnsEmptyForUnknownStation() {
+        assertEquals(Optional.empty(), registry.findByName("Несуществующая станция"));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   ", "\t\n", "\u2003"})
+    @DisplayName("Поиск null, пустой строки и строки из пробелов возвращает пустой Optional")
+    void findByNameReturnsEmptyForMissingName(String name) {
+        assertEquals(Optional.empty(), registry.findByName(name));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Гомель", "Пассажирский", "Гомель- Пассажирский"})
+    @DisplayName("Поиск требует полного имени и сохраняет внутренние пробелы")
+    void findByNameDoesNotMatchPartialOrAlteredName(String name) {
+        assertEquals(Optional.empty(), registry.findByName(name));
+    }
+
+    @Test
+    @DisplayName("namesStartingWith не учитывает регистр и сортирует названия по алфавиту")
+    void namesStartingWithIgnoresCaseAndSorts() {
+        StationRegistry sample = new StationRegistry(List.of(
+                new Station("Калинковичи", Line.GOMEL_KALINKOVICHI, StationType.DIVISIONAL, 125),
+                new Station("Житковичи", Line.GOMEL_LUNINETS, StationType.INTERMEDIATE, 238),
+                new Station("Демехи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 57)
+        ));
+
+        assertEquals(List.of("Житковичи"), sample.namesStartingWith("ж"));
+        assertEquals(
+                List.of("Демехи", "Житковичи", "Калинковичи"),
+                sample.namesStartingWith("")
+        );
+    }
+
+    @Test
+    @DisplayName("namesStartingWith возвращает пустой список, если префикс никому не подходит")
+    void namesStartingWithReturnsEmptyWhenNothingMatches() {
+        assertEquals(List.of(), new StationRegistry().namesStartingWith("Ыыы"));
+    }
+
+    @Test
+    @DisplayName("namesStartingWith не принимает null")
+    void namesStartingWithRejectsNull() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new StationRegistry().namesStartingWith(null));
+    }
+
+    @Test
+    @DisplayName("distanceBetween возвращает модуль разности расстояний для станций одного направления")
+    void distanceBetweenReturnsDistanceForSameLine() {
+        assertEquals(68, registry.distanceBetween("Демехи", "Калинковичи"));
+        assertEquals(68, registry.distanceBetween("Калинковичи", "Демехи"));
+    }
+
+    @Test
+    @DisplayName("distanceBetween выбрасывает исключение для неизвестной станции")
+    void distanceBetweenThrowsForUnknownStation() {
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.distanceBetween("Несуществующая станция", "Демехи"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.distanceBetween("Демехи", "Несуществующая станция"));
+    }
+
+    @Test
+    @DisplayName("distanceBetween выбрасывает исключение для станций разных направлений")
+    void distanceBetweenThrowsForDifferentLines() {
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.distanceBetween("Гомель-Пассажирский", "Демехи"));
+    }
+
+    @Test
+    @DisplayName("distanceBetween возвращает 0 для одной и той же станции и не зависит от регистра")
+    void distanceBetweenReturnsZeroForSameStation() {
+        assertEquals(0, registry.distanceBetween("Демехи", "Демехи"));
+        assertEquals(0, registry.distanceBetween("демехи", "ДЕМЕХИ"));
+    }
+
+    @Test
+    @DisplayName("findByLine корректно фильтрует станции (изолированный тест)")
+    void findByLineFiltersCorrectly() {
+        Station station1 = new Station("Тестовая 1", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 10);
+        Station station2 = new Station("Тестовая 2", Line.GOMEL_LUNINETS, StationType.INTERMEDIATE, 20);
+        Station station3 = new Station("Тестовая 3", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 30);
+        StationRegistry testRegistry = new StationRegistry(List.of(station1, station2, station3));
+        List<Station> result = testRegistry.findByLine(Line.GOMEL_KALINKOVICHI);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(station1));
+        assertTrue(result.contains(station3));
+        assertFalse(result.contains(station2));
+    }
+
+    @Test
+    @DisplayName("findByLine возвращает пустой список, если станций на направлении нет")
+    void findByLineReturnsEmptyListForLineWithoutStations() {
+        StationRegistry emptyRegistry = new StationRegistry(List.of());
+        List<Station> stations = emptyRegistry.findByLine(Line.GOMEL_LUNINETS);
+        assertNotNull(stations);
+        assertTrue(stations.isEmpty());
+    }
+
+    @Test
+    @DisplayName("findByLine выбрасывает исключение при передаче null")
+    void findByLineThrowsExceptionForNull() {
+        assertThrows(IllegalArgumentException.class, 
+                () -> registry.findByLine(null));
+    }
+
+    @Test
+    @DisplayName("Возвращается самая удалённая станция")
+    void returnsFarthestStation() {
+        Station farthest = registry.farthest().orElseThrow();
+        assertEquals("Житковичи", farthest.name());
+        assertEquals(238, farthest.distanceFromGomelKm());
+    }
+
+    @Test
+    @DisplayName("Пустой справочник возвращает пустой результат")
+    void returnsEmptyWhenRegistryIsEmpty() {
+        StationRegistry emptyRegistry = new StationRegistry(List.of());
+        assertTrue(emptyRegistry.farthest().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Справочник с одной станцией возвращает её")
+    void returnsOnlyStationWhenRegistryHasOneStation() {
+        Station gomel = new Station("Гомель-Пассажирский", Line.GOMEL_ZHLOBIN, StationType.PASSENGER, 0);
+        StationRegistry singleStationRegistry = new StationRegistry(List.of(gomel));
+        assertEquals(gomel, singleStationRegistry.farthest().orElseThrow());
     }
 
     private List<String> tableLines() {
@@ -138,177 +358,48 @@ class StationRegistryTest {
     }
 
     @Test
-    @DisplayName("Возвращается самая удалённая станция")
-    void returnsFarthestStation() {
-        Station farthest = registry.farthest().orElseThrow();
-
-        assertEquals("Житковичи", farthest.name());
-        assertEquals(238, farthest.distanceFromGomelKm());
-    }
-
-    @Test
-    @DisplayName("Пустой справочник возвращает пустой результат")
-    void returnsEmptyWhenRegistryIsEmpty() {
+    @DisplayName("toMarkdownTable: для пустого справочника возвращаются только заголовок и разделитель")
+    void toMarkdownTableReturnsOnlyHeaderWhenRegistryIsEmpty() {
         StationRegistry emptyRegistry = new StationRegistry(List.of());
-
-        assertTrue(emptyRegistry.farthest().isEmpty());
+        List<String> lines = emptyRegistry.toMarkdownTable().lines().toList();
+        assertEquals(2, lines.size(), "Для пустого справочника должно быть ровно 2 строки");
+        assertEquals("| Станция | Направление | Тип | Расстояние от Гомеля, км |", lines.get(0));
+        assertEquals("| --- | --- | --- | --- |", lines.get(1));
     }
 
     @Test
-    @DisplayName("Справочник с одной станцией возвращает её")
-    void returnsOnlyStationWhenRegistryHasOneStation() {
-        Station gomel = new Station(
-                "Гомель-Пассажирский",
-                Line.GOMEL_ZHLOBIN,
-                StationType.PASSENGER,
-                0
-        );
-
-        StationRegistry singleStationRegistry =
-                new StationRegistry(List.of(gomel));
-
-        assertEquals(gomel, singleStationRegistry.farthest().orElseThrow());
+    @DisplayName("toMarkdownTable: корректно формирует разметку для справочника из одной станции")
+    void toMarkdownTableFormatsSingleStationRegistry() {
+        Station testStation = new Station("Тестовая", Line.GOMEL_BRYANSK, StationType.FREIGHT, 50);
+        StationRegistry singleRegistry = new StationRegistry(List.of(testStation));
+        List<String> lines = singleRegistry.toMarkdownTable().lines().toList();
+        assertEquals(3, lines.size(), "Для одной станции должно быть ровно 3 строки");
+        assertEquals("| Тестовая | GOMEL_BRYANSK | FREIGHT | 50 |", lines.get(2));
     }
 
     @Test
-    @DisplayName("Справочник содержит станцию Житковичи с корректными атрибутами")
-    void containsZhitkovichi() {
-        Station zhitkovichi = station("Житковичи");
-        assertEquals(Line.GOMEL_LUNINETS, zhitkovichi.line());
-        assertEquals(StationType.INTERMEDIATE, zhitkovichi.type());
-        assertEquals(238, zhitkovichi.distanceFromGomelKm());
-    }
-    @Test
-    @DisplayName("Справочник содержит станцию Калинковичи с корректными атрибутами")
-    void containsKalinkovichi() {
-        Station kalinkovichi = station("Калинковичи");
-        assertEquals(Line.GOMEL_KALINKOVICHI, kalinkovichi.line());
-        assertEquals(StationType.DIVISIONAL, kalinkovichi.type());
-        assertEquals(125, kalinkovichi.distanceFromGomelKm());
+    @DisplayName("toMarkdownTable: экранирует символ '|' в названии станции при генерации таблицы")
+    void toMarkdownTableEscapesPipeCharacterInTableName() {
+        Station stationWithPipe = new Station("Пункт A|B", Line.GOMEL_ZHLOBIN, StationType.INTERMEDIATE, 15);
+        StationRegistry customRegistry = new StationRegistry(List.of(stationWithPipe));
+        List<String> lines = customRegistry.toMarkdownTable().lines().toList();
+        assertEquals("| Пункт A\\|B | GOMEL_ZHLOBIN | INTERMEDIATE | 15 |", lines.get(2));
     }
 
     @Test
-    @DisplayName("Поиск по точному имени возвращает каждую станцию справочника")
-    void findByNameReturnsEachStation() {
-        for (Station expected : registry.all()) {
-            assertEquals(Optional.of(expected), registry.findByName(expected.name()));
-        }
+    @DisplayName("toMarkdownTable: заменяет переносы строк в названии станции пробелами")
+    void toMarkdownTableReplacesLineBreaksInTableName() {
+        Station stationWithBreak = new Station("Станция\nНовая", Line.GOMEL_KALINKOVICHI, StationType.PASSENGER, 30);
+        StationRegistry customRegistry = new StationRegistry(List.of(stationWithBreak));
+        List<String> lines = customRegistry.toMarkdownTable().lines().toList();
+        assertEquals(3, lines.size(), "Перенос строки внутри названия не должен создавать лишнюю строку в таблице");
+        assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"гомель-пассажирский", "ГОМЕЛЬ-ПАССАЖИРСКИЙ", "ГоМеЛь-ПаСсАжИрСкИй"})
-    @DisplayName("Поиск по имени не учитывает регистр кириллицы")
-    void findByNameIgnoresCase(String name) {
-        assertEquals(Optional.of(station("Гомель-Пассажирский")), registry.findByName(name));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"  Гомель-Пассажирский  ", "\tгомель-пассажирский\n", "\u2003ГОМЕЛЬ-ПАССАЖИРСКИЙ\u2003"})
-    @DisplayName("Поиск по имени удаляет пробелы по краям, в том числе вместе с изменением регистра")
-    void findByNameStripsSurroundingWhitespace(String name) {
-        assertEquals(Optional.of(station("Гомель-Пассажирский")), registry.findByName(name));
-    }
+    // ==================== ЗАДАЧА 2: Тесты для метода countByLine (в конце класса) ====================
 
     @Test
-    @DisplayName("Поиск неизвестного имени возвращает пустой Optional")
-    void findByNameReturnsEmptyForUnknownStation() {
-        assertEquals(Optional.empty(), registry.findByName("Несуществующая станция"));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"   ", "\t\n", "\u2003"})
-    @DisplayName("Поиск null, пустой строки и строки из пробелов возвращает пустой Optional")
-    void findByNameReturnsEmptyForMissingName(String name) {
-        assertEquals(Optional.empty(), registry.findByName(name));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"Гомель", "Пассажирский", "Гомель- Пассажирский"})
-    @DisplayName("Поиск требует полного имени и сохраняет внутренние пробелы")
-    void findByNameDoesNotMatchPartialOrAlteredName(String name) {
-        assertEquals(Optional.empty(), registry.findByName(name));
-    }
-    
-    @Test
-    @DisplayName("Справочник содержит станцию Василевичи с корректными атрибутами")
-    void containsVasilevichi() {
-        Station vasilevichi = station("Василевичи");
-        assertEquals(Line.GOMEL_KALINKOVICHI, vasilevichi.line());
-        assertEquals(StationType.INTERMEDIATE, vasilevichi.type());
-        assertEquals(86, vasilevichi.distanceFromGomelKm());
-    }
-
-    @Test
-    @DisplayName("namesStartingWith не учитывает регистр и сортирует названия по алфавиту")
-    void namesStartingWithIgnoresCaseAndSorts() {
-        StationRegistry sample = new StationRegistry(List.of(
-                new Station("Калинковичи", Line.GOMEL_KALINKOVICHI, StationType.DIVISIONAL, 125),
-                new Station("Житковичи", Line.GOMEL_LUNINETS, StationType.INTERMEDIATE, 238),
-                new Station("Демехи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 57)
-        ));
-
-        assertEquals(List.of("Житковичи"), sample.namesStartingWith("ж"));
-        assertEquals(
-                List.of("Демехи", "Житковичи", "Калинковичи"),
-                sample.namesStartingWith("")
-        );
-    }
-
-    @Test
-    @DisplayName("namesStartingWith возвращает пустой список, если префикс никому не подходит")
-    void namesStartingWithReturnsEmptyWhenNothingMatches() {
-        assertEquals(List.of(), new StationRegistry().namesStartingWith("Ыыы"));
-    }
-
-    @Test
-    @DisplayName("namesStartingWith не принимает null")
-    void namesStartingWithRejectsNull() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new StationRegistry().namesStartingWith(null));
-    }
-
-    @Test
-    @DisplayName("Справочник содержит станцию Тереховка с корректными атрибутами")
-    void containsTerekhovka() {
-        Station terekhovka = station("Тереховка");
-        assertEquals(Line.GOMEL_BAKHMACH, terekhovka.line());
-        assertEquals(StationType.INTERMEDIATE, terekhovka.type());
-        assertEquals(43, terekhovka.distanceFromGomelKm());
-    }    
-  
-    @Test
-    @DisplayName("distanceBetween возвращает модуль разности расстояний для станций одного направления")
-    void distanceBetweenReturnsDistanceForSameLine() {
-        assertEquals(68, registry.distanceBetween("Демехи", "Калинковичи"));
-        assertEquals(68, registry.distanceBetween("Калинковичи", "Демехи"));
-    }
-
-    @Test
-    @DisplayName("distanceBetween выбрасывает исключение для неизвестной станции")
-    void distanceBetweenThrowsForUnknownStation() {
-        assertThrows(IllegalArgumentException.class,
-                () -> registry.distanceBetween("Несуществующая станция", "Демехи"));
-        assertThrows(IllegalArgumentException.class,
-                () -> registry.distanceBetween("Демехи", "Несуществующая станция"));
-    }
-
-    @Test
-    @DisplayName("distanceBetween выбрасывает исключение для станций разных направлений")
-    void distanceBetweenThrowsForDifferentLines() {
-        assertThrows(IllegalArgumentException.class,
-                () -> registry.distanceBetween("Гомель-Пассажирский", "Демехи"));
-    }
-
-    @Test
-    @DisplayName("distanceBetween возвращает 0 для одной и той же станции и не зависит от регистра")
-    void distanceBetweenReturnsZeroForSameStation() {
-        assertEquals(0, registry.distanceBetween("Демехи", "Демехи"));
-        assertEquals(0, registry.distanceBetween("демехи", "ДЕМЕХИ"));
-    }
-    @Test
-
-    @DisplayName("countByLine считает станции по направлениям")
+    @DisplayName("countByLine считает станции по направлениям корректно")
     void countByLineCountsStationsPerLine() {
         StationRegistry sample = new StationRegistry(List.of(
                 new Station("Демехи", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 57),
@@ -340,123 +431,9 @@ class StationRegistryTest {
     }
 
     @Test
-    @DisplayName("countByLine: сумма по направлениям равна числу станций справочника")
+    @DisplayName("countByLine: сумма по направлениям равна общему числу станций справочника")
     void countByLineSumsToRegistrySize() {
         long total = registry.countByLine().values().stream().mapToLong(Long::longValue).sum();
         assertEquals(registry.all().size(), total);
     }
-
-    @Test
-    @DisplayName("Справочник содержит станцию Уза с корректными атрибутами")
-    void containsUza() {
-        Station uza = station("Уза");
-        assertEquals(Line.GOMEL_ZHLOBIN, uza.line());
-        assertEquals(StationType.INTERMEDIATE, uza.type());
-        assertEquals(23, uza.distanceFromGomelKm());
-    }
-
-    @Test
-    @DisplayName("Справочник содержит станцию Гомель-Сортировочный с корректными атрибутами")
-    void containsGomelSortirovochny() {
-        Station station = station("Гомель-Сортировочный");
-        assertEquals(Line.GOMEL_ZHLOBIN, station.line());
-        assertEquals(StationType.MARSHALLING, station.type());
-        assertEquals(6, station.distanceFromGomelKm());
-    }
-
-    @Test
-    @DisplayName("Справочник содержит станцию Словечно с корректными атрибутами")
-    void containsSlovechno() {
-        Station slovechno = station("Словечно");
-        assertEquals(Line.GOMEL_KALINKOVICHI, slovechno.line());
-        assertEquals(StationType.INTERMEDIATE, slovechno.type()); 
-        assertEquals(194, slovechno.distanceFromGomelKm());
-    }
-
-    // блок тестов метода M1
-    @Test
-    @DisplayName("findByLine корректно фильтрует станции (изолированный тест)")
-    void findByLineFiltersCorrectly() {
-        Station station1 = new Station("Тестовая 1", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 10);
-        Station station2 = new Station("Тестовая 2", Line.GOMEL_LUNINETS, StationType.INTERMEDIATE, 20);
-        Station station3 = new Station("Тестовая 3", Line.GOMEL_KALINKOVICHI, StationType.INTERMEDIATE, 30);
-        StationRegistry testRegistry = new StationRegistry(List.of(station1, station2, station3));
-        List<Station> result = testRegistry.findByLine(Line.GOMEL_KALINKOVICHI);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(station1));
-        assertTrue(result.contains(station3));
-        assertFalse(result.contains(station2));
-    }
-
-    @Test
-    @DisplayName("findByLine возвращает пустой список, если станций на направлении нет")
-    void findByLineReturnsEmptyListForLineWithoutStations() {
-        StationRegistry emptyRegistry = new StationRegistry(List.of());
-        List<Station> stations = emptyRegistry.findByLine(Line.GOMEL_LUNINETS);
-        assertNotNull(stations);
-        assertTrue(stations.isEmpty());
-    }
-
-    @Test
-    @DisplayName("findByLine выбрасывает исключение при передаче null")
-    void findByLineThrowsExceptionForNull() {
-        assertThrows(IllegalArgumentException.class, 
-                () -> registry.findByLine(null));
-    }
-
-    @Test
-    @DisplayName("Справочник содержит станцию Светлогорск-на-Березине с корректными атрибутами")
-    void containsSvetlogorskNaBerezine() {
-        Station station = station("Светлогорск-на-Березине");
-        assertEquals(Line.ZHLOBIN_KALINKOVICHI, station.line());
-        assertEquals(StationType.INTERMEDIATE, station.type());
-        assertEquals(124, station.distanceFromGomelKm());
-    }
-
-    // ==================== Дополнительные тесты для метода toMarkdownTable (Issue #32) ====================
-
-    @Test
-    @DisplayName("toMarkdownTable: для пустого справочника возвращаются только заголовок и разделитель")
-    void toMarkdownTableReturnsOnlyHeaderWhenRegistryIsEmpty() {
-        StationRegistry emptyRegistry = new StationRegistry(List.of());
-        List<String> lines = emptyRegistry.toMarkdownTable().lines().toList();
-
-        assertEquals(2, lines.size(), "Для пустого справочника должно быть ровно 2 строки");
-        assertEquals("| Станция | Направление | Тип | Расстояние от Гомеля, км |", lines.get(0));
-        assertEquals("| --- | --- | --- | --- |", lines.get(1));
-    }
-
-    @Test
-    @DisplayName("toMarkdownTable: корректно формирует разметку для справочника из одной станции")
-    void toMarkdownTableFormatsSingleStationRegistry() {
-        Station testStation = new Station("Тестовая", Line.GOMEL_BRYANSK, StationType.FREIGHT, 50);
-        StationRegistry singleRegistry = new StationRegistry(List.of(testStation));
-        List<String> lines = singleRegistry.toMarkdownTable().lines().toList();
-
-        assertEquals(3, lines.size(), "Для одной станции должно быть ровно 3 строки (заголовок, разделитель, станция)");
-        assertEquals("| Тестовая | GOMEL_BRYANSK | FREIGHT | 50 |", lines.get(2));
-    }
-
-    @Test
-    @DisplayName("toMarkdownTable: экранирует символ '|' в названии станции при генерации таблицы")
-    void toMarkdownTableEscapesPipeCharacterInTableName() {
-        Station stationWithPipe = new Station("Пункт A|B", Line.GOMEL_ZHLOBIN, StationType.INTERMEDIATE, 15);
-        StationRegistry customRegistry = new StationRegistry(List.of(stationWithPipe));
-        List<String> lines = customRegistry.toMarkdownTable().lines().toList();
-
-        assertEquals("| Пункт A\\|B | GOMEL_ZHLOBIN | INTERMEDIATE | 15 |", lines.get(2));
-    }
-
-    @Test
-    @DisplayName("toMarkdownTable: заменяет переносы строк в названии станции пробелами")
-    void toMarkdownTableReplacesLineBreaksInTableName() {
-        Station stationWithBreak = new Station("Станция\nНовая", Line.GOMEL_KALINKOVICHI, StationType.PASSENGER, 30);
-        StationRegistry customRegistry = new StationRegistry(List.of(stationWithBreak));
-        List<String> lines = customRegistry.toMarkdownTable().lines().toList();
-
-        assertEquals(3, lines.size(), "Перенос строки внутри названия не должен создавать лишнюю строку в таблице");
-        assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
-    }
-
-    // тесты новых станций и методов добавляются в конец класса
 }
