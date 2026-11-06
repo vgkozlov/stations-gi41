@@ -458,5 +458,16 @@ class StationRegistryTest {
         assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
 
+   @Test
+    void shouldContainMozyrStation() {
+        StationRegistry registry = new StationRegistry();
+        Optional<Station> mozyr = registry.findByName("Мозырь");
+    
+        assertTrue(mozyr.isPresent(), "Станция Мозырь должна присутствовать в справочнике");
+            assertEquals(Line.GOMEL_KALINKOVICHI, mozyr.get().line(), "Направление станции Мозырь");
+        assertEquals(StationType.DIVISIONAL, mozyr.get().type(), "Тип станции Мозырь");
+        assertEquals(133, mozyr.get().distanceFromGomelKm(), "Расстояние от Гомеля до Мозыря");
+    }
+   
     // тесты новых станций и методов добавляются в конец класса
 }
