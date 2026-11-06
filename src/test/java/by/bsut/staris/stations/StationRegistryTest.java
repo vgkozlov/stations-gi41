@@ -16,6 +16,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Optional;
 
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -422,6 +424,15 @@ class StationRegistryTest {
         assertEquals(124, station.distanceFromGomelKm());
     }
 
+       @Test
+    @DisplayName("Справочник содержит станцию Буда-Кошелёвская с корректными атрибутами")
+    void containsBudaKoshelevo() {
+        Station station = station("Буда-Кошелёвская");
+        assertEquals(Line.GOMEL_ZHLOBIN, station.line());
+        assertEquals(StationType.INTERMEDIATE, station.type());
+        assertEquals(45, station.distanceFromGomelKm());
+    }
+
     // ==================== Дополнительные тесты для метода toMarkdownTable (Issue #32) ====================
 
     @Test
@@ -466,6 +477,7 @@ class StationRegistryTest {
         assertEquals(3, lines.size(), "Перенос строки внутри названия не должен создавать лишнюю строку в таблице");
         assertEquals("| Станция Новая | GOMEL_KALINKOVICHI | PASSENGER | 30 |", lines.get(2));
     }
+
 
     // тесты новых станций и методов добавляются в конец класса
 }
