@@ -514,6 +514,27 @@ class StationRegistryTest {
     }
 
     @Test
+    @DisplayName("findByType возвращает станции заданного типа")
+    void findByTypeReturnsStationsOfGivenType() {
+        List<Station> result = registry.findByType(StationType.PASSENGER);
+        assertTrue(result.stream().allMatch(s -> s.type() == StationType.PASSENGER));
+        assertTrue(result.stream().anyMatch(s -> s.name().equals("Гомель-Пассажирский")));
+    }
+
+    @Test
+    @DisplayName("findByType возвращает пустой список, если станций такого типа нет")
+    void findByTypeReturnsEmptyListForAbsentType() {
+        StationRegistry emptyRegistry = new StationRegistry(List.of());
+        assertTrue(emptyRegistry.findByType(StationType.FREIGHT).isEmpty());
+    }
+
+    @Test
+    @DisplayName("findByType выбрасывает исключение при передаче null")
+    void findByTypeThrowsExceptionForNull() {
+        assertThrows(IllegalArgumentException.class, () -> registry.findByType(null));
+    }
+
+    @Test
     @DisplayName("Справочник содержит станцию Носовичи с корректными атрибутами")
     void containsNosovichi() {
         Station nosovichi = station("Носовичи");

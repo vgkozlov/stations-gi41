@@ -155,5 +155,19 @@ public final class StationRegistry {
                 .filter(station -> station.distanceFromGomelKm() <= maxKm)
                 .toList();
     }
+    /**
+     * Возвращает станции заданного типа.
+     *
+     * @throws IllegalArgumentException если {@code type} равен {@code null}
+     */
+    public List<Station> findByType(StationType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Тип не задан");
+        }
+        return stations.stream()
+                .filter(station -> station.type() == type)
+                .toList();
+    }
+
     // новые методы добавляются в конец класса
 }
