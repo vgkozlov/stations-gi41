@@ -16,4 +16,4 @@
 | Гомель-Сортировочный | GOMEL_ZHLOBIN | MARSHALLING | 6 |
 | Светлогорск-на-Березине | ZHLOBIN_KALINKOVICHI | INTERMEDIATE | 124 |
 | Буда-Кошелёвская | GOMEL_ZHLOBIN | INTERMEDIATE | 45 |
-| Носовичи | GOMEL_BAKHMACH | INTERMEDIATE | 26 |
+| Носовичи | GOMEL_ZHLOBIN | INTERMEDIATE | 75 |
