@@ -597,5 +597,14 @@ class StationRegistryTest {
                 "Сообщение об ошибке не должно быть пустым");
     }
 
+    @Test
+    @DisplayName("Справочник содержит станцию Хойники с корректными атрибутами")
+    void containsKhoiniki() {
+        Station khoiniki = station("Хойники");
+        assertEquals(Line.VASILEVICHI_KHOYNIKI, khoiniki.line());
+        assertEquals(StationType.INTERMEDIATE, khoiniki.type());
+        assertEquals(130, khoiniki.distanceFromGomelKm());
+    }
+
     // тесты новых станций и методов добавляются в конец класса
 }

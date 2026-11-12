@@ -17,3 +17,4 @@
 | Светлогорск-на-Березине | ZHLOBIN_KALINKOVICHI | INTERMEDIATE | 124 |
 | Буда-Кошелёвская | GOMEL_ZHLOBIN | INTERMEDIATE | 45 |
 | Носовичи | GOMEL_BAKHMACH | INTERMEDIATE | 26 |
+| Хойники | VASILEVICHI_KHOYNIKI | INTERMEDIATE | 130 |
