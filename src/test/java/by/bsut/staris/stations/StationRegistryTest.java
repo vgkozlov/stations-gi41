@@ -544,6 +544,60 @@ class StationRegistryTest {
     }
 
     @Test
+    @DisplayName("findByLine возвращает для каждого направления ровно свои станции")
+    void findByLineReturnsExactlyStationsOfEachLine() {
+        for (Line line : Line.values()) {
+            List<Station> expected = registry.all().stream()
+                    .filter(candidate -> candidate.line() == line)
+                    .toList();
+
+            assertEquals(expected, registry.findByLine(line),
+                    "Неверный результат для направления " + line);
+        }
+    }
+
+    @Test
+    @DisplayName("findByLine сохраняет порядок станций справочника")
+    void findByLineKeepsRegistryOrder() {
+        Station second = new Station("Вторая", Line.GOMEL_BAKHMACH, StationType.INTERMEDIATE, 20);
+        Station otherLine = new Station("Другое направление", Line.GOMEL_ZHLOBIN, StationType.INTERMEDIATE, 10);
+        Station first = new Station("Первая", Line.GOMEL_BAKHMACH, StationType.INTERMEDIATE, 30);
+        StationRegistry sample = new StationRegistry(List.of(second, otherLine, first));
+
+        assertEquals(List.of(second, first), sample.findByLine(Line.GOMEL_BAKHMACH));
+    }
+
+    @Test
+    @DisplayName("findByLine возвращает пустой список, если на направлении нет станций")
+    void findByLineReturnsEmptyListWhenNoStationOnLine() {
+        StationRegistry sample = new StationRegistry(List.of(
+                new Station("Гомель-Пассажирский", Line.GOMEL_ZHLOBIN, StationType.PASSENGER, 0)));
+
+        assertTrue(sample.findByLine(Line.GOMEL_BRYANSK).isEmpty(),
+                "Станций направления GOMEL_BRYANSK в этом справочнике нет");
+    }
+
+    @Test
+    @DisplayName("findByLine не изменяет справочник")
+    void findByLineDoesNotModifyRegistry() {
+        List<Station> before = registry.all();
+
+        registry.findByLine(Line.GOMEL_BAKHMACH);
+
+        assertEquals(before, registry.all());
+    }
+
+    @Test
+    @DisplayName("findByLine сообщает о недопустимом аргументе null")
+    void findByLineRejectsNullWithMessage() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> registry.findByLine(null));
+
+        assertTrue(exception.getMessage() != null && !exception.getMessage().isBlank(),
+                "Сообщение об ошибке не должно быть пустым");
+    }
+
+    @Test
     @DisplayName("Справочник содержит станцию Хойники с корректными атрибутами")
     void containsKhoiniki() {
         Station khoiniki = station("Хойники");
