@@ -577,5 +577,25 @@ class StationRegistryTest {
                 "Станций направления GOMEL_BRYANSK в этом справочнике нет");
     }
 
+    @Test
+    @DisplayName("findByLine не изменяет справочник")
+    void findByLineDoesNotModifyRegistry() {
+        List<Station> before = registry.all();
+
+        registry.findByLine(Line.GOMEL_BAKHMACH);
+
+        assertEquals(before, registry.all());
+    }
+
+    @Test
+    @DisplayName("findByLine сообщает о недопустимом аргументе null")
+    void findByLineRejectsNullWithMessage() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> registry.findByLine(null));
+
+        assertTrue(exception.getMessage() != null && !exception.getMessage().isBlank(),
+                "Сообщение об ошибке не должно быть пустым");
+    }
+
     // тесты новых станций и методов добавляются в конец класса
 }
