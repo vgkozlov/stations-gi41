@@ -553,4 +553,14 @@ class StationRegistryTest {
     }
 
     // тесты новых станций и методов добавляются в конец класса
+    @Test
+    @DisplayName("findByType: возвращает пустой список, если передан тип, отсутствующий в справочнике")
+    void findByTypeReturnsEmptyForUnusedType() {
+        StationRegistry customRegistry = new StationRegistry(List.of(
+                new Station("Гомель-Пассажирский", Line.GOMEL_ZHLOBIN, StationType.PASSENGER, 0)
+        ));
+        List<Station> result = customRegistry.findByType(StationType.FREIGHT);
+        assertTrue(result.isEmpty());
+    }
+
 }
